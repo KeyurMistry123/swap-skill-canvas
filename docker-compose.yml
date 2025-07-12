@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_DB: swapdb
+      POSTGRES_USER: swapuser
+      POSTGRES_PASSWORD: swappass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d
+  backend:
+    build: ./backend
+    env_file:
+      - ./backend/.env
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+volumes:
+  postgres_data: 
